@@ -24,7 +24,7 @@ export const globalStyles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FBF9F6',
         alignItems: 'center',
         justifyContent: 'center',
     },

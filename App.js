@@ -11,8 +11,8 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={globalStyles.poppinsBold}>Open up App.js to start working on your app!</Text>
+    <View style={globalStyles.container}>
+      <Text style={styles.title}>Open up App.js to start working on your app!</Text>
       <Text style={globalStyles.poppinsRegular}>Open up App.js to start working on your app!</Text>
       <Text style={globalStyles.poppinsLight}>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" />
@@ -21,10 +21,8 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  title: {
+    fontSize: 18,
+    fontFamily: 'Poppins-Bold'
+  }
 });
