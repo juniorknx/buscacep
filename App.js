@@ -1,28 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { useGlobalFonts, globalStyles } from './src/styles/globalStyle';
+import { NavigationContainer } from '@react-navigation/native';
+import { MyStack } from './src/navigation/MyStack';
 
 export default function App() {
-  const fontsLoaded = useGlobalFonts();
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
-    <View style={globalStyles.container}>
-      <Text style={styles.title}>Open up App.js to start working on your app!</Text>
-      <Text style={globalStyles.poppinsRegular}>Open up App.js to start working on your app!</Text>
-      <Text style={globalStyles.poppinsLight}>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <MyStack />
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    fontFamily: 'Poppins-Bold'
-  }
-});

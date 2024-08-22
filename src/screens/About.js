@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { View, Text, StyleSheet } from "react-native";
 import { globalStyles, useGlobalFonts } from "../styles/globalStyle";
 
-export function HomeScreen() {
+export function AboutScreen() {
     const fontsLoaded = useGlobalFonts();
 
     if (!fontsLoaded) {
@@ -11,7 +11,7 @@ export function HomeScreen() {
 
     return (
         <View style={globalStyles.container}>
-            <Text style={styles.title}>Home Page!!!</Text>
+            <Text style={styles.title}>About Page!!!</Text>
             <StatusBar style="auto" />
         </View>
     )
