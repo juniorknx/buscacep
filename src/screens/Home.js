@@ -11,8 +11,11 @@ export function HomeScreen({ navigation }) {
 
     return (
         <View style={globalStyles.container}>
-            <Text style={styles.title}>Home Page!!!</Text>
-            <Button title="Ir para Sobre" onPress={() => navigation.navigate('Sobre')} />
+            <Text style={styles.title}>Buscar Cep</Text>
+            <Button title="Ir para Sobre" onPress={() => navigation.navigate('Sobre', {
+                id: 20,
+                name: 'Julio'
+            })} />
             <StatusBar style="auto" />
         </View>
     )
