@@ -44,8 +44,8 @@ export function HomeScreen({ navigation }) {
     }
 
     return (
-        <SafeAreaView>
-            <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.content}>
                 <StatusBar style="auto" />
                 <Header />
                 <View style={styles.inputView}>
@@ -65,7 +65,7 @@ export function HomeScreen({ navigation }) {
 
                 <View style={styles.resultBox}>
                     <View style={styles.resultContainer}>
-                        <Text></Text>
+                        <Text>B</Text>
                     </View>
                 </View>
             </View>
@@ -75,8 +75,14 @@ export function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: '#FBF9F6',
         alignItems: 'center',
+    },
+
+    content: {
+        flex: 1,
+        alignItems: 'center'
     },
 
     title: {
