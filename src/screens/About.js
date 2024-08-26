@@ -1,21 +1,20 @@
 import { StatusBar } from "expo-status-bar";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { globalStyles, useGlobalFonts } from "../styles/globalStyle";
 
-export function HomeScreen({ navigation }) {
+export function AboutScreen({ route, navigation }) {
+
+    const { id, name } = route.params
+
     const fontsLoaded = useGlobalFonts();
 
     if (!fontsLoaded) {
         return null;
     }
-
+    console.log('=====>', id, name)
     return (
         <View style={globalStyles.container}>
-            <Text style={styles.title}>Buscar Cep</Text>
-            <Button title="Ir para Sobre" onPress={() => navigation.navigate('Sobre', {
-                id: 20,
-                name: 'Julio'
-            })} />
+            <Text style={styles.title}>About Page!!!</Text>
             <StatusBar style="auto" />
         </View>
     )
