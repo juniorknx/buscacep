@@ -7,8 +7,18 @@ export function MyBottomTab() {
 
     return (
         <Tab.Navigator>
-            <Tab.Screen name="Home" component={HomeScreen} />
-            <Tab.Screen name="About" component={AboutScreen} />
+            <Tab.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
+
+            <Tab.Screen
+                name="About"
+                component={AboutScreen}
+            />
         </Tab.Navigator>
     )
 }
