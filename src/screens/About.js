@@ -4,17 +4,17 @@ import { globalStyles, useGlobalFonts } from "../styles/globalStyle";
 
 export function AboutScreen({ route, navigation }) {
 
-    const { id, name } = route.params
+    const { id, name } = route.params || {}
 
     const fontsLoaded = useGlobalFonts();
 
     if (!fontsLoaded) {
         return null;
     }
-    console.log('=====>', id, name)
+
     return (
         <View style={globalStyles.container}>
-            <Text style={styles.title}>About Page!!!</Text>
+            <Text style={styles.title}>About Page!!! {id} and the name {name}</Text>
             <StatusBar style="auto" />
         </View>
     )
