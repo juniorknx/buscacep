@@ -1,11 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard, SafeAreaView, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, SafeAreaView, ActivityIndicator, Image } from "react-native";
 import { useGlobalFonts } from "../styles/globalStyle";
 import { Input } from "../components/Input";
 import { Header } from "../components/Header";
 import { useEffect, useState } from "react";
 import { formatCep } from "../helpers/formattedCep";
 import { api } from '../services/api'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function HomeScreen({ navigation }) {
     const [cep, setCep] = useState('')
@@ -32,7 +33,6 @@ export function HomeScreen({ navigation }) {
             setLoading(true)
             const response = await api.get(`${cep}/json`)
             setCity(response.data)
-            console.log('FROM CITY ===>', city)
         } catch (err) {
             console.error(err, 'ERRO AO CHAMAR API DE CEP')
         } finally {
@@ -44,6 +44,28 @@ export function HomeScreen({ navigation }) {
     function handleCepChange(text) {
         const formattedCep = formatCep(text)
         setCep(formattedCep)
+    }
+
+    function handleNewSearch() {
+        setCep('')
+        setCity('')
+    }
+
+    async function handleSave(localidade, logradouro, bairro, uf, cep) {
+        try {
+            const data = {
+                localidade,
+                logradouro,
+                bairro,
+                uf,
+                cep
+            };
+            const jsonValue = JSON.stringify(data);
+            await AsyncStorage.setItem('@user_address', jsonValue);
+            console.log('Dados salvos com sucesso!');
+        } catch (e) {
+            console.error('Erro ao salvar os dados:', e);
+        }
     }
 
     return (
@@ -80,10 +102,12 @@ export function HomeScreen({ navigation }) {
                             <Text style={styles.resultContent}>{city.logradouro}</Text>
                         </View>
 
-                        <View style={styles.resultContainer}>
-                            <Text style={styles.resultTitle}>Complemento: </Text>
-                            <Text style={styles.resultContent}>{city.complemento}</Text>
-                        </View>
+                        {city.complemento &&
+                            <View style={styles.resultContainer}>
+                                <Text style={styles.resultTitle}>Complemento: </Text>
+                                <Text style={styles.resultContent}>{city.complemento}</Text>
+                            </View>
+                        }
 
                         <View style={styles.resultContainer}>
                             <Text style={styles.resultTitle}>Bairro: </Text>
@@ -98,6 +122,18 @@ export function HomeScreen({ navigation }) {
                         <View style={styles.resultContainer}>
                             <Text style={styles.resultTitle}>CEP: </Text>
                             <Text style={styles.resultContent}>{city.cep}</Text>
+                        </View>
+
+                        <View style={styles.resultFooter}>
+                            <TouchableOpacity style={styles.footerButton} onPress={() => handleSave(city.localidade, city.logradouro, city.bairro, city.uf, city.cep)}>
+                                <Text style={styles.footerBtnText}>Salvar</Text>
+                                <Image source={require('../../assets/icons/downloadicon.png')} style={styles.icon} />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.footerButton} onPress={handleNewSearch}>
+                                <Text style={styles.footerBtnText}>Nova Busca</Text>
+                                <Image source={require('../../assets/icons/newicon.png')} style={styles.icon} />
+                            </TouchableOpacity>
                         </View>
                     </View>
                 }
@@ -152,7 +188,15 @@ const styles = StyleSheet.create({
         width: 355,
         height: 350,
         borderRadius: 10,
-        padding: 12
+        padding: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 8,
     },
 
     resultTitle: {
@@ -163,5 +207,36 @@ const styles = StyleSheet.create({
     resultContent: {
         fontSize: 14,
         fontFamily: 'Poppins-Light'
+    },
+
+    resultFooter: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',
+        marginTop: 15,
+        gap: 10
+    },
+
+    footerButton: {
+        backgroundColor: '#FFC20E',
+        width: 122,
+        padding: 5,
+        borderRadius: 4,
+        flexDirection: 'row',
+        gap: 8,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    footerBtnText: {
+        color: '#00416B',
+        textAlign: 'center',
+        fontFamily: 'Poppins-Regular',
+        fontSize: 13
+    },
+
+    icon: {
+        width: 14,
+        height: 14
     }
 });

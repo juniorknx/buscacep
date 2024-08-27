@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { HomeScreen } from "../screens/Home";
-import { AboutScreen } from "../screens/About";
+import { FavoriteScreen } from "../screens/Favorites";
+import { Image } from "react-native";
 
 export function MyBottomTab() {
     const Tab = createBottomTabNavigator();
@@ -8,16 +9,25 @@ export function MyBottomTab() {
     return (
         <Tab.Navigator>
             <Tab.Screen
-                name="Home"
+                name="Buscar"
                 component={HomeScreen}
                 options={{
-                    headerShown: false
+                    headerShown: false,
+                    tabBarIcon: (size, color) => {
+                        return <Image source={require('../../assets/icons/searchicon.png')} />
+                    }
                 }}
             />
 
             <Tab.Screen
-                name="About"
-                component={AboutScreen}
+                name="Favoritos"
+                component={FavoriteScreen}
+                options={{
+                    headerShown: true,
+                    tabBarIcon: (size, color) => {
+                        return <Image source={require('../../assets/icons/mapicon.png')} />
+                    }
+                }}
             />
         </Tab.Navigator>
     )
