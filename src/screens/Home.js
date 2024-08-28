@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard, SafeAreaView, ActivityIndicator, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, SafeAreaView, ActivityIndicator } from "react-native";
 import { useGlobalFonts } from "../styles/globalStyle";
 import { Input } from "../components/Input";
 import { Header } from "../components/Header";
@@ -7,11 +7,14 @@ import { useEffect, useState } from "react";
 import { formatCep } from "../helpers/formattedCep";
 import { api } from '../services/api'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ToastMessage } from "../components/Toast";
+import { AddressCard } from "../components/CardAddress";
 
 export function HomeScreen({ navigation }) {
     const [cep, setCep] = useState('')
     const [city, setCity] = useState('')
     const [loading, setLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState(false)
     const fontsLoaded = useGlobalFonts();
 
     useEffect(() => {
@@ -26,20 +29,32 @@ export function HomeScreen({ navigation }) {
 
     async function handleSearch() {
         console.log('Handle search')
-        if (cep == '') {
+
+        if (cep === '') {
             alert('Digite um CEP Válido!')
+            return
         }
+
         try {
             setLoading(true)
             const response = await api.get(`${cep}/json`)
-            setCity(response.data)
+            if (!response.data || response.data.erro) {
+                setCity(null)
+                setErrorMessage(true)
+            } else {
+                setCity(response.data)
+                setErrorMessage(false)
+            }
         } catch (err) {
             console.error(err, 'ERRO AO CHAMAR API DE CEP')
+            setErrorMessage(true)
+            setCity(null)
         } finally {
             setLoading(false)
             Keyboard.dismiss()
         }
     }
+
 
     function handleCepChange(text) {
         const formattedCep = formatCep(text)
@@ -90,53 +105,14 @@ export function HomeScreen({ navigation }) {
                     </TouchableOpacity>
                 </View>
 
-                {city &&
-                    <View style={styles.resultBox}>
-                        <View style={styles.resultContainer}>
-                            <Text style={styles.resultTitle}>Localidade: </Text>
-                            <Text style={styles.resultContent}>{city.localidade}</Text>
-                        </View>
-
-                        <View style={styles.resultContainer}>
-                            <Text style={styles.resultTitle}>Logradouro: </Text>
-                            <Text style={styles.resultContent}>{city.logradouro}</Text>
-                        </View>
-
-                        {city.complemento &&
-                            <View style={styles.resultContainer}>
-                                <Text style={styles.resultTitle}>Complemento: </Text>
-                                <Text style={styles.resultContent}>{city.complemento}</Text>
-                            </View>
-                        }
-
-                        <View style={styles.resultContainer}>
-                            <Text style={styles.resultTitle}>Bairro: </Text>
-                            <Text style={styles.resultContent}>{city.bairro}</Text>
-                        </View>
-
-                        <View style={styles.resultContainer}>
-                            <Text style={styles.resultTitle}>UF: </Text>
-                            <Text style={styles.resultContent}>{city.uf}</Text>
-                        </View>
-
-                        <View style={styles.resultContainer}>
-                            <Text style={styles.resultTitle}>CEP: </Text>
-                            <Text style={styles.resultContent}>{city.cep}</Text>
-                        </View>
-
-                        <View style={styles.resultFooter}>
-                            <TouchableOpacity style={styles.footerButton} onPress={() => handleSave(city.localidade, city.logradouro, city.bairro, city.uf, city.cep)}>
-                                <Text style={styles.footerBtnText}>Salvar</Text>
-                                <Image source={require('../../assets/icons/downloadicon.png')} style={styles.icon} />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.footerButton} onPress={handleNewSearch}>
-                                <Text style={styles.footerBtnText}>Nova Busca</Text>
-                                <Image source={require('../../assets/icons/newicon.png')} style={styles.icon} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                }
+                {errorMessage ? (
+                    <ToastMessage
+                        message={'Nenhum endereço encontrado'}
+                        typeMessage={'error'}
+                    />
+                ) : (
+                    city && <AddressCard data={city} onPress={handleNewSearch} />
+                )}
             </View>
         </SafeAreaView>
     )
@@ -179,64 +155,5 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         color: '#fff',
         fontSize: 15
-    },
-
-    resultBox: {
-        alignItems: 'flex-start',
-        justifyContent: 'space-around',
-        backgroundColor: "#fff",
-        width: 355,
-        height: 350,
-        borderRadius: 10,
-        padding: 12,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 6,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 8,
-    },
-
-    resultTitle: {
-        fontSize: 16,
-        fontFamily: 'Poppins-Bold'
-    },
-
-    resultContent: {
-        fontSize: 14,
-        fontFamily: 'Poppins-Light'
-    },
-
-    resultFooter: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '100%',
-        marginTop: 15,
-        gap: 10
-    },
-
-    footerButton: {
-        backgroundColor: '#FFC20E',
-        width: 122,
-        padding: 5,
-        borderRadius: 4,
-        flexDirection: 'row',
-        gap: 8,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-    footerBtnText: {
-        color: '#00416B',
-        textAlign: 'center',
-        fontFamily: 'Poppins-Regular',
-        fontSize: 13
-    },
-
-    icon: {
-        width: 14,
-        height: 14
     }
 });
