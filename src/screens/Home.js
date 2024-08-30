@@ -66,20 +66,22 @@ export function HomeScreen({ navigation }) {
         setCity('')
     }
 
-    async function handleSave(localidade, logradouro, bairro, uf, cep) {
+    async function handleSaveAddress(city) {
         try {
-            const data = {
-                localidade,
-                logradouro,
-                bairro,
-                uf,
-                cep
-            };
-            const jsonValue = JSON.stringify(data);
-            await AsyncStorage.setItem('@user_address', jsonValue);
-            console.log('Dados salvos com sucesso!');
-        } catch (e) {
-            console.error('Erro ao salvar os dados:', e);
+            const existingAddresses = await AsyncStorage.getItem('@addresses');
+            const addressesArray = existingAddresses ? JSON.parse(existingAddresses) : [];
+            const isCepAlreadySaved = addressesArray.some(address => address.cep === city.cep);
+
+            if (isCepAlreadySaved) {
+                console.log('Esse endereço já foi salvo anteriormente.');
+                return;
+            }
+
+            addressesArray.push(city);
+            await AsyncStorage.setItem('@addresses', JSON.stringify(addressesArray));
+            console.log('Endereço salvo com sucesso!');
+        } catch (error) {
+            console.error('Erro ao salvar o endereço:', error);
         }
     }
 
@@ -111,7 +113,7 @@ export function HomeScreen({ navigation }) {
                         typeMessage={'error'}
                     />
                 ) : (
-                    city && <AddressCard data={city} onPress={handleNewSearch} />
+                    city && <AddressCard data={city} onPress={handleNewSearch} onSaveAddress={() => handleSaveAddress(city)} />
                 )}
             </View>
         </SafeAreaView>

@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
+import { SafeAreaView, View, Text, StyleSheet, FlatList } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AddressCard } from '../components/CardAddress';
 
 export function FavoriteScreen() {
-    const [address, setAddress] = useState(null);
+    const [addresses, setAddresses] = useState([]);
 
     useEffect(() => {
-        async function fetchAddress() {
+        async function fetchAddresses() {
             try {
-                const jsonValue = await AsyncStorage.getItem('@user_address');
+                const jsonValue = await AsyncStorage.getItem('@addresses');
                 if (jsonValue != null) {
                     const data = JSON.parse(jsonValue);
-                    setAddress(data);
+                    setAddresses(data);
                 } else {
                     console.log('Nenhum dado encontrado.');
                 }
@@ -20,15 +21,19 @@ export function FavoriteScreen() {
             }
         }
 
-        fetchAddress();
+        fetchAddresses();
     }, []);
 
     return (
         <SafeAreaView style={styles.container}>
             <View>
                 <Text>Favorite Page!!</Text>
-                {address ? (
-                    <Text>{`Endereço: ${address.logradouro}, ${address.bairro}, ${address.localidade}, ${address.uf}, CEP: ${address.cep}`}</Text>
+                {addresses.length > 0 ? (
+                    <FlatList
+                        data={addresses}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => <AddressCard data={item} style={{ gap: 20 }} />}
+                    />
                 ) : (
                     <Text>Nenhum endereço salvo.</Text>
                 )}

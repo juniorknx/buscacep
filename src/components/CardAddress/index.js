@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 
-export function AddressCard({ data, onPress }) {
+export function AddressCard({ data, onPress, onSaveAddress }) {
     return (
         <View style={styles.resultBox}>
             <View style={styles.resultContainer}>
@@ -36,7 +36,7 @@ export function AddressCard({ data, onPress }) {
             </View>
 
             <View style={styles.resultFooter}>
-                <TouchableOpacity style={styles.footerButton} onPress={() => handleSave(city.localidade, city.logradouro, city.bairro, city.uf, city.cep)}>
+                <TouchableOpacity style={styles.footerButton} onPress={onSaveAddress}>
                     <Text style={styles.footerBtnText}>Salvar</Text>
                     <Image source={require('../../../assets/icons/downloadicon.png')} style={styles.icon} />
                 </TouchableOpacity>
