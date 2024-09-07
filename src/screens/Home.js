@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard, SafeAreaView, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, SafeAreaView, ActivityIndicator, Alert } from "react-native";
 import { useGlobalFonts } from "../styles/globalStyle";
 import { Input } from "../components/Input";
 import { Header } from "../components/Header";
@@ -74,12 +74,13 @@ export function HomeScreen({ navigation }) {
 
             if (isCepAlreadySaved) {
                 console.log('Esse endereço já foi salvo anteriormente.');
+                Alert.alert('Erro', 'O endereço ja foi salvo.')
                 return;
             }
 
             addressesArray.push(city);
             await AsyncStorage.setItem('@addresses', JSON.stringify(addressesArray));
-            console.log('Endereço salvo com sucesso!');
+            Alert.alert('', 'Endereço salvo com sucesso!')
         } catch (error) {
             console.error('Erro ao salvar o endereço:', error);
         }
@@ -113,7 +114,7 @@ export function HomeScreen({ navigation }) {
                         typeMessage={'error'}
                     />
                 ) : (
-                    city && <AddressCard data={city} onPress={handleNewSearch} onSaveAddress={() => handleSaveAddress(city)} />
+                    city && <AddressCard data={city} defaultFooter={true} onPress={handleNewSearch} onSaveAddress={() => handleSaveAddress(city)} />
                 )}
             </View>
         </SafeAreaView>

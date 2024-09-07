@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 
-export function AddressCard({ data, onPress, onSaveAddress }) {
+export function AddressCard({ data, onPress, onSaveAddress, defaultFooter }) {
     return (
         <View style={styles.resultBox}>
             <View style={styles.resultContainer}>
@@ -35,17 +35,28 @@ export function AddressCard({ data, onPress, onSaveAddress }) {
                 <Text style={styles.resultContent}>{data.cep}</Text>
             </View>
 
-            <View style={styles.resultFooter}>
-                <TouchableOpacity style={styles.footerButton} onPress={onSaveAddress}>
-                    <Text style={styles.footerBtnText}>Salvar</Text>
-                    <Image source={require('../../../assets/icons/downloadicon.png')} style={styles.icon} />
-                </TouchableOpacity>
+            {defaultFooter &&
+                <View style={styles.resultFooter}>
+                    <TouchableOpacity style={styles.footerButton} onPress={onSaveAddress}>
+                        <Text style={styles.footerBtnText}>Salvar</Text>
+                        <Image source={require('../../../assets/icons/downloadicon.png')} style={styles.icon} />
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.footerButton} onPress={onPress}>
-                    <Text style={styles.footerBtnText}>Nova Busca</Text>
-                    <Image source={require('../../../assets/icons/newicon.png')} style={styles.icon} />
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity style={styles.footerButton} onPress={onPress}>
+                        <Text style={styles.footerBtnText}>Nova Busca</Text>
+                        <Image source={require('../../../assets/icons/newicon.png')} style={styles.icon} />
+                    </TouchableOpacity>
+                </View>
+            }
+
+            {!defaultFooter &&
+                <View style={styles.resultFooter}>
+                    <TouchableOpacity style={styles.footerButton} onPress={onPress}>
+                        <Text style={styles.footerBtnText}>Remover</Text>
+                        <Image source={require('../../../assets/icons/cancel.png')} style={styles.iconRemove} />
+                    </TouchableOpacity>
+                </View>
+            }
         </View>
     )
 }
@@ -108,5 +119,10 @@ const styles = StyleSheet.create({
     icon: {
         width: 14,
         height: 14
+    },
+
+    iconRemove: {
+        width: 10,
+        height: 10
     }
 });

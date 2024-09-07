@@ -22,17 +22,34 @@ export function FavoriteScreen() {
         }
 
         fetchAddresses();
-    }, []);
+    }, [addresses]);
+
+    async function handleRemove(addressToRemove) {
+        try {
+            const filteredAddresses = addresses.filter(item => item !== addressToRemove);
+            setAddresses(filteredAddresses);
+            await AsyncStorage.setItem('@addresses', JSON.stringify(filteredAddresses));
+        } catch (e) {
+            console.error('Erro ao remover o endereço:', e);
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
             <View>
-                <Text style={styles.title}>Meus Endereços:</Text>
+                <Text style={styles.title}>Meus Endereços: {addresses.length}</Text>
                 {addresses.length > 0 ? (
                     <FlatList
                         data={addresses}
                         keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => <AddressCard data={item} style={{ gap: 20 }} />}
+                        renderItem={({ item }) => (
+                            <AddressCard
+                                data={item}
+                                onPress={() => handleRemove(item)}
+                            />
+                        )}
+                        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                        contentContainerStyle={{ paddingBottom: 10, paddingLeft: 10, paddingRight: 10 }}
                     />
                 ) : (
                     <Text>Nenhum endereço salvo.</Text>
@@ -53,6 +70,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Bold',
         fontSize: 23,
         marginTop: 25,
-        marginBottom: 20 
+        marginBottom: 20
     }
 });
