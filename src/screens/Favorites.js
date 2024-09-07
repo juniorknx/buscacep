@@ -27,7 +27,7 @@ export function FavoriteScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <View>
-                <Text>Favorite Page!!</Text>
+                <Text style={styles.title}>Meus Endereços:</Text>
                 {addresses.length > 0 ? (
                     <FlatList
                         data={addresses}
@@ -48,4 +48,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#FBF9F6',
         alignItems: 'center',
     },
+
+    title: {
+        fontFamily: 'Poppins-Bold',
+        fontSize: 23,
+        marginTop: 25,
+        marginBottom: 20 
+    }
 });
