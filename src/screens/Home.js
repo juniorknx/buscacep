@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Keyboard, SafeAreaView, Activ
 import { useGlobalFonts } from "../styles/globalStyle";
 import { Input } from "../components/Input";
 import { Header } from "../components/Header";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { formatCep } from "../helpers/formattedCep";
 import { api } from '../services/api'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,12 +16,6 @@ export function HomeScreen({ navigation }) {
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState(false)
     const fontsLoaded = useGlobalFonts();
-
-    useEffect(() => {
-        if (cep.length === 0) {
-            Keyboard.dismiss()
-        }
-    }, [cep])
 
     if (!fontsLoaded) {
         return null;
